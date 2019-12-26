@@ -1,19 +1,18 @@
-version: "2"
+version: "3"
 services:
   pdns:
-    build: . 
-    #image: secns/pdns
+    build: .
+    container_name: pdns
     ports:
     - "53:53"
     - "53:53/udp"
-    - "8080:80"
-    environment:
-    - PDNS_ALLOW_AXFR_IPS=127.0.0.1
-    - PDNS_DISTRIBUTOR_THREADS=3
-    - PDNS_CACHE_TTL=20
-    - PDNS_RECURSIVE_CACHE_TTL=10
-    - DB_ENV_MYSQL_ROOT_PASSWORD=changeme
-  db:
+    - "36000:8081"
+    env_file: .env.master
+
+  pdns-db:
     image: mysql:5.7
-    environment:
-    - MYSQL_ROOT_PASSWORD=changeme
+    container_name: pdns_db
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./db/pdns_data:/var/lib/mysql
+    env_file: .env.master
