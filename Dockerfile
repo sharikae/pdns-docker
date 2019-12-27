@@ -16,23 +16,11 @@ RUN apt-get update && apt-get install -y \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-### PDNS ###
-
 RUN rm -rf /etc/powerdns/pdns.d/
-
-COPY assets/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY assets/nginx/vhost.conf /etc/nginx/sites-enabled/vhost.conf
-COPY assets/nginx/fastcgi_params /etc/nginx/fastcgi_params
-
-COPY assets/php/php.ini /etc/php/7.0/fpm/php.ini
-COPY assets/php/php-cli.ini /etc/php/7.0/cli/php.ini
 
 COPY assets/pdns/pdns.conf /etc/powerdns/pdns.conf
 COPY assets/pdns/pdns.d/ /etc/powerdns/pdns.d/
 COPY assets/mysql/pdns.sql /pdns.sql
-
-### ENTRYPOINT ###
-
 COPY entrypoint.sh /entrypoint.sh
 
 EXPOSE 53 80
