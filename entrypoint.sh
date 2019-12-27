@@ -13,7 +13,6 @@ PDNS_LOCAL_ADDRESS=${PDNS_LOCAL_ADDRESS:-127.0.0.1}
 PDNS_LOCAL_PORT=${PDNS_LOCAL_PORT:-53}
 PDNS_WEBSERVER=${PDNS_WEBSERVER:-no}
 PDNS_WEBSERVER_ADDRESS=${PDNS_WEBSERVER_ADDRESS:-127.0.0.1}
-PDNS_WEBSERVER_ALLOW_FROM=${PDNS_WEBSERVER_ALLOW_FROM:-127.0.0.1}
 PDNS_WEBSERVER_PORT=${PDNS_WEBSERVER_PORT:-8081}
 
 
@@ -43,10 +42,11 @@ sed -i "s/{{PDNS_SLAVE}}/${PDNS_SLAVE}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_CACHE_TTL}}/${PDNS_CACHE_TTL}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_DISTRIBUTOR_THREADS}}/${PDNS_DISTRIBUTOR_THREADS}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_API}}/${PDNS_API}/" /etc/powerdns/pdns.conf
+sed -i "s/{{PDNS_LOCAL_ADDRESS}}/${PDNS_LOCAL_ADDRESS}/" /etc/powerdns/pdns.conf
+sed -i "s/{{PDNS_LOCAL_PORT}}/${PDNS_LOCAL_PORT}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_API_KEY}}/${PDNS_API_KEY}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_WEBSERVER}}/${PDNS_WEBSERVER}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_WEBSERVER_ADDRESS}}/${PDNS_WEBSERVER_ADDRESS}/" /etc/powerdns/pdns.conf
-sed -i "s/{{PDNS_WEBSERVER_ALLOW_FROM}}/${PDNS_WEBSERVER_ALLOW_FROM}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_WEBSERVER_PORT}}/${PDNS_WEBSERVER_PORT}/" /etc/powerdns/pdns.conf
 
 exec /usr/sbin/pdns_server --guardian=yes
