@@ -1,1 +1,6 @@
+# env
 .env.master
+
+# idea
+.idea
+*.iml
