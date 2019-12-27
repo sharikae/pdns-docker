@@ -13,9 +13,6 @@ PDNS_WEBSERVER=${PDNS_WEBSERVER:-no}
 PDNS_WEBSERVER_ADDRESS=${PDNS_WEBSERVER_ADDRESS:-127.0.0.1}
 PDNS_WEBSERVER_ALLOW_FROM=${PDNS_WEBSERVER_ALLOW_FROM:-127.0.0.1}
 PDNS_WEBSERVER_PORT=${PDNS_WEBSERVER_PORT:-8081}
-POWERADMIN_HOSTMASTER=${POWERADMIN_HOSTMASTER:-}
-POWERADMIN_NS1=${POWERADMIN_NS1:-}
-POWERADMIN_NS2=${POWERADMIN_NS2:-}
 
 
 until nc -z ${MYSQL_HOST} ${MYSQL_PORT}; do
@@ -29,8 +26,7 @@ then
 else
 	mysql -u ${MYSQL_USER} -p${MYSQL_PASSWORD} --host=${MYSQL_HOST} -e "CREATE DATABASE ${MYSQL_DB}"
 	mysql -u ${MYSQL_USER} -p${MYSQL_PASSWORD} --host=${MYSQL_HOST} ${MYSQL_DB} < /pdns.sql
-	mysql -u ${MYSQL_USER} -p${MYSQL_PASSWORD} --host=${MYSQL_HOST} ${MYSQL_DB} < /poweradmin.sql
-	rm /pdns.sql /poweradmin.sql
+	rm /pdns.sql
 fi
 
 ### PDNS
@@ -51,15 +47,4 @@ sed -i "s/{{PDNS_WEBSERVER_ADDRESS}}/${PDNS_WEBSERVER_ADDRESS}/" /etc/powerdns/p
 sed -i "s/{{PDNS_WEBSERVER_ALLOW_FROM}}/${PDNS_WEBSERVER_ALLOW_FROM}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_WEBSERVER_PORT}}/${PDNS_WEBSERVER_PORT}/" /etc/powerdns/pdns.conf
 
-### POWERADMIN
-sed -i "s/{{MYSQL_HOST}}/${MYSQL_HOST}/" /var/www/html/inc/config.inc.php
-sed -i "s/{{MYSQL_PORT}}/${MYSQL_PORT}/" /var/www/html/inc/config.inc.php
-sed -i "s/{{MYSQL_USER}}/${MYSQL_USER}/" /var/www/html/inc/config.inc.php
-sed -i "s/{{MYSQL_PASSWORD}}/${MYSQL_PASSWORD}/" /var/www/html/inc/config.inc.php
-sed -i "s/{{MYSQL_DB}}/${MYSQL_DB}/" /var/www/html/inc/config.inc.php
-sed -i "s/{{POWERADMIN_HOSTMASTER}}/${POWERADMIN_HOSTMASTER}/" /var/www/html/inc/config.inc.php
-sed -i "s/{{POWERADMIN_NS1}}/${POWERADMIN_NS1}/" /var/www/html/inc/config.inc.php
-sed -i "s/{{POWERADMIN_NS2}}/${POWERADMIN_NS2}/" /var/www/html/inc/config.inc.php
-
-exec /usr/bin/supervisord
-
+exec /usr/sbin/pdns_server --guardian=yes
