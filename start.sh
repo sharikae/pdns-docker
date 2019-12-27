@@ -12,9 +12,14 @@ PDNS_DISTRIBUTOR_THREADS=${PDNS_DISTRIBUTOR_THREADS:-3}
 PDNS_RECURSIVE_CACHE_TTL=${PDNS_RECURSIVE_CACHE_TTL:-10}
 PDNS_ALLOW_RECURSION=${PDNS_ALLOW_RECURSION:-127.0.0.1}
 PDNS_RECURSOR=${PDNS_RECURSOR:-no}
+PDNS_WEBSERVER=${PDNS_WEBSERVER:-no}
+PDNS_WEBSERVER_ADDRESS=${PDNS_WEBSERVER_ADDRESS:-127.0.0.1}
+PDNS_WEBSERVER_ALLOW_FROM=${PDNS_WEBSERVER_ALLOW_FROM:-127.0.0.1}
+PDNS_WEBSERVER_PORT=${PDNS_WEBSERVER_PORT:-8081}
 POWERADMIN_HOSTMASTER=${POWERADMIN_HOSTMASTER:-}
 POWERADMIN_NS1=${POWERADMIN_NS1:-}
 POWERADMIN_NS2=${POWERADMIN_NS2:-}
+
 
 until nc -z ${MYSQL_HOST} ${MYSQL_PORT}; do
     echo "$(date) - waiting for mysql..."
@@ -42,9 +47,12 @@ sed -i "s/{{PDNS_MASTER}}/${PDNS_MASTER}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_SLAVE}}/${PDNS_SLAVE}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_CACHE_TTL}}/${PDNS_CACHE_TTL}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_DISTRIBUTOR_THREADS}}/${PDNS_DISTRIBUTOR_THREADS}/" /etc/powerdns/pdns.conf
-sed -i "s/{{PDNS_RECURSIVE_CACHE_TTL}}/${PDNS_RECURSIVE_CACHE_TTL}/" /etc/powerdns/pdns.conf
-sed -i "s/{{PDNS_ALLOW_RECURSION}}/${PDNS_ALLOW_RECURSION}/" /etc/powerdns/pdns.conf
-sed -i "s/{{PDNS_RECURSOR}}/${PDNS_RECURSOR}/" /etc/powerdns/pdns.conf
+sed -i "s/{{PDNS_API}}/${PDNS_API}/" /etc/powerdns/pdns.conf
+sed -i "s/{{PDNS_API_KEY}}/${PDNS_API_KEY}/" /etc/powerdns/pdns.conf
+sed -i "s/{{PDNS_WEBSERVER}}/${PDNS_WEBSERVER}/" /etc/powerdns/pdns.conf
+sed -i "s/{{PDNS_WEBSERVER_ADDRESS}}/${PDNS_WEBSERVER_ADDRESS}/" /etc/powerdns/pdns.conf
+sed -i "s/{{PDNS_WEBSERVER_ALLOW_FROM}}/${PDNS_WEBSERVER_ALLOW_FROM}/" /etc/powerdns/pdns.conf
+sed -i "s/{{PDNS_WEBSERVER_PORT}}/${PDNS_WEBSERVER_PORT}/" /etc/powerdns/pdns.conf
 
 ### POWERADMIN
 sed -i "s/{{MYSQL_HOST}}/${MYSQL_HOST}/" /var/www/html/inc/config.inc.php
