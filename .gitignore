@@ -7,3 +7,5 @@
 
 # data
 data/
+authoritative/assets/config/pdns.conf
+authoritative/assets/config/pdns.d/mysql.conf

@@ -1,8 +1,8 @@
 version: "3"
 services:
   pdns:
-    build: .
-    container_name: pdns
+    build: authoritative
+    container_name: pdns_authoritative
     ports:
     - "53:53"
     - "53:53/udp"

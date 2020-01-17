@@ -7,7 +7,7 @@
 #################################
 # allow-axfr-ips	Allow zonetransfers only to these subnets
 #
-allow-axfr-ips={{PDNS_ALLOW_AXFR_IPS}}
+# allow-axfr-ips=127.0.0.0/8,::1
 
 #################################
 # allow-dnsupdate-from	A global setting to allow DNS updates from these IP ranges.
@@ -37,32 +37,37 @@ allow-axfr-ips={{PDNS_ALLOW_AXFR_IPS}}
 #################################
 # any-to-tcp	Answer ANY queries with tc=1, shunting to TCP
 #
-# any-to-tcp=no
+# any-to-tcp=yes
 
 #################################
-# api	Enable/disable the REST API
+# api	Enable/disable the REST API (including HTTP listener)
 #
-api={{PDNS_API}}
+# api=no
 
 #################################
 # api-key	Static pre-shared authentication key for access to the REST API
 #
-api-key={{PDNS_API_KEY}}
+# api-key=
 
 #################################
-# api-logfile	Location of the server logfile (used by the REST API)
+# axfr-fetch-timeout	Maximum time in seconds for inbound AXFR to start or be idle after starting
 #
-# api-logfile=/var/log/pdns.log
+# axfr-fetch-timeout=10
 
 #################################
-# api-readonly	Disallow data modification through the REST API when set
+# axfr-lower-serial	Also AXFR a zone from a master with a lower serial
 #
-# api-readonly=no
+# axfr-lower-serial=no
 
 #################################
 # cache-ttl	Seconds to store packets in the PacketCache
 #
-cache-ttl={{PDNS_CACHE_TTL}}
+# cache-ttl=20
+
+#################################
+# carbon-instance	If set overwrites the the instance name default
+#
+# carbon-instance=auth
 
 #################################
 # carbon-interval	Number of seconds between carbon (graphite) updates
@@ -70,12 +75,17 @@ cache-ttl={{PDNS_CACHE_TTL}}
 # carbon-interval=30
 
 #################################
+# carbon-namespace	If set overwrites the first part of the carbon string
+#
+# carbon-namespace=pdns
+
+#################################
 # carbon-ourname	If set, overrides our reported hostname for carbon stats
 #
 # carbon-ourname=
 
 #################################
-# carbon-server	If set, send metrics in carbon (graphite) format to this server
+# carbon-server	If set, send metrics in carbon (graphite) format to this server IP address
 #
 # carbon-server=
 
@@ -105,9 +115,14 @@ cache-ttl={{PDNS_CACHE_TTL}}
 # daemon=no
 
 #################################
-# default-ksk-algorithms	Default KSK algorithms
+# default-api-rectify	Default API-RECTIFY value for zones
 #
-# default-ksk-algorithms=ecdsa256
+# default-api-rectify=yes
+
+#################################
+# default-ksk-algorithm	Default KSK algorithm
+#
+# default-ksk-algorithm=ecdsa256
 
 #################################
 # default-ksk-size	Default KSK size (0 means default)
@@ -140,9 +155,9 @@ cache-ttl={{PDNS_CACHE_TTL}}
 # default-ttl=3600
 
 #################################
-# default-zsk-algorithms	Default ZSK algorithms
+# default-zsk-algorithm	Default ZSK algorithm
 #
-# default-zsk-algorithms=
+# default-zsk-algorithm=
 
 #################################
 # default-zsk-size	Default ZSK size (0 means default)
@@ -150,7 +165,7 @@ cache-ttl={{PDNS_CACHE_TTL}}
 # default-zsk-size=0
 
 #################################
-# direct-dnskey	Fetch DNSKEY RRs from backend during DNSKEY synthesis
+# direct-dnskey	Fetch DNSKEY, CDS and CDNSKEY RRs from backend during DNSKEY or CDS/CDNSKEY synthesis
 #
 # direct-dnskey=no
 
@@ -170,14 +185,9 @@ cache-ttl={{PDNS_CACHE_TTL}}
 # disable-syslog=no
 
 #################################
-# disable-tcp	Do not listen to TCP queries
-#
-# disable-tcp=no
-
-#################################
 # distributor-threads	Default number of Distributor (backend) threads to start
 #
-distributor-threads={{PDNS_DISTRIBUTOR_THREADS}}
+# distributor-threads=3
 
 #################################
 # dname-processing	If we should support DNAME records
@@ -210,19 +220,29 @@ distributor-threads={{PDNS_DISTRIBUTOR_THREADS}}
 # edns-subnet-processing=no
 
 #################################
+# enable-lua-records	Process LUA records for all zones (metadata overrides this)
+#
+# enable-lua-records=no
+
+#################################
 # entropy-source	If set, read entropy from this file
 #
 # entropy-source=/dev/urandom
 
 #################################
-# experimental-lua-policy-script	Lua script for the policy engine
+# expand-alias	Expand ALIAS records
 #
-# experimental-lua-policy-script=
+# expand-alias=no
 
 #################################
 # forward-dnsupdate	A global setting to allow DNS update packages that are for a Slave domain, to be forwarded to the master.
 #
 # forward-dnsupdate=yes
+
+#################################
+# forward-notify	IP addresses to forward received notifications to regardless of master or slave settings
+#
+# forward-notify=
 
 #################################
 # guardian	Run within a guardian process
@@ -239,7 +259,7 @@ include-dir=/etc/powerdns/pdns.d
 # launch	Which backends to launch and order to query them in
 #
 # launch=
-launch=gmysql-dnssec
+launch=
 
 #################################
 # load-modules	Load this module - supply absolute or relative path
@@ -249,7 +269,7 @@ launch=gmysql-dnssec
 #################################
 # local-address	Local IP addresses to which we bind
 #
-local-address={{PDNS_LOCAL_ADDRESS}}
+# local-address=0.0.0.0
 
 #################################
 # local-address-nonexist-fail	Fail to start if one or more of the local-address's do not exist on this server
@@ -269,7 +289,7 @@ local-address={{PDNS_LOCAL_ADDRESS}}
 #################################
 # local-port	The port on which we listen
 #
-local-port={{PDNS_LOCAL_PORT}}
+# local-port=53
 
 #################################
 # log-dns-details	If PDNS should log DNS non-erroneous details
@@ -282,6 +302,11 @@ local-port={{PDNS_LOCAL_PORT}}
 # log-dns-queries=no
 
 #################################
+# log-timestamp	Print timestamps in log lines
+#
+# log-timestamp=yes
+
+#################################
 # logging-facility	Log under a specific facility
 #
 # logging-facility=
@@ -292,17 +317,32 @@ local-port={{PDNS_LOCAL_PORT}}
 # loglevel=4
 
 #################################
+# lua-axfr-script	Script to be used to edit incoming AXFRs
+#
+# lua-axfr-script=
+
+#################################
+# lua-dnsupdate-policy-script	Lua script with DNS update policy handler
+#
+# lua-dnsupdate-policy-script=
+
+#################################
 # lua-prequery-script	Lua script with prequery handler (DO NOT USE)
 #
 # lua-prequery-script=
 
 #################################
-# master	Act as a master
+# lua-records-exec-limit	LUA records scripts execution limit (instructions count). Values <= 0 mean no limit
 #
-master={{PDNS_MASTER}}
+# lua-records-exec-limit=1000
 
 #################################
-# max-cache-entries	Maximum number of cache entries
+# master	Act as a master
+#
+# master=no
+
+#################################
+# max-cache-entries	Maximum number of entries in the query cache
 #
 # max-cache-entries=1000000
 
@@ -317,6 +357,11 @@ master={{PDNS_MASTER}}
 # max-nsec3-iterations=500
 
 #################################
+# max-packet-cache-entries	Maximum number of entries in the packet cache
+#
+# max-packet-cache-entries=1000000
+
+#################################
 # max-queue-length	Maximum queuelength before considering situation lost
 #
 # max-queue-length=5000
@@ -327,9 +372,24 @@ master={{PDNS_MASTER}}
 # max-signature-cache-entries=
 
 #################################
+# max-tcp-connection-duration	Maximum time in seconds that a TCP DNS connection is allowed to stay open.
+#
+# max-tcp-connection-duration=0
+
+#################################
 # max-tcp-connections	Maximum number of TCP connections
 #
 # max-tcp-connections=20
+
+#################################
+# max-tcp-connections-per-client	Maximum number of simultaneous TCP connections per client
+#
+# max-tcp-connections-per-client=0
+
+#################################
+# max-tcp-transactions-per-conn	Maximum number of subsequent queries per TCP connection
+#
+# max-tcp-transactions-per-conn=0
 
 #################################
 # module-dir	Default directory for modules
@@ -355,11 +415,6 @@ master={{PDNS_MASTER}}
 # only-notify	Only send AXFR NOTIFY to these IP addresses or netmasks
 #
 # only-notify=0.0.0.0/0,::/0
-
-#################################
-# out-of-zone-additional-processing	Do out of zone additional processing
-#
-# out-of-zone-additional-processing=yes
 
 #################################
 # outgoing-axfr-expand-alias	Expand ALIAS records during outgoing AXFR
@@ -407,6 +462,11 @@ master={{PDNS_MASTER}}
 # receiver-threads=1
 
 #################################
+# resolver	Use this resolver for ALIAS and the internal stub resolver
+#
+# resolver=no
+
+#################################
 # retrieval-threads	Number of AXFR-retrieval threads for slave operation
 #
 # retrieval-threads=2
@@ -417,12 +477,22 @@ master={{PDNS_MASTER}}
 # reuseport=no
 
 #################################
+# rng	Specify the random number generator to use. Valid values are auto,sodium,openssl,getrandom,arc4random,urandom.
+#
+# rng=auto
+
+#################################
 # security-poll-suffix	Domain name from which to query security update notifications
 #
 # security-poll-suffix=secpoll.powerdns.com.
 
 #################################
-# server-id	Returned when queried for 'server.id' TXT or NSID, defaults to hostname - disabled or custom
+# send-signed-notify	Send TSIG secured NOTIFY if TSIG key is configured for a domain
+#
+# send-signed-notify=yes
+
+#################################
+# server-id	Returned when queried for 'id.server' TXT or NSID, defaults to hostname - disabled or custom
 #
 # server-id=
 
@@ -444,7 +514,7 @@ setuid=pdns
 #################################
 # slave	Act as a slave
 #
-slave={{PDNS_SLAVE}}
+# slave=no
 
 #################################
 # slave-cycle-interval	Schedule slave freshness checks once every .. seconds
@@ -482,6 +552,11 @@ slave={{PDNS_SLAVE}}
 # socket-dir=
 
 #################################
+# superslave	Act as a superslave
+#
+# superslave=no
+
+#################################
 # tcp-control-address	If set, PowerDNS can be controlled over TCP on this address
 #
 # tcp-control-address=
@@ -502,6 +577,16 @@ slave={{PDNS_SLAVE}}
 # tcp-control-secret=
 
 #################################
+# tcp-fast-open	Enable TCP Fast Open support on the listening sockets, using the supplied numerical value as the queue size
+#
+# tcp-fast-open=0
+
+#################################
+# tcp-idle-timeout	Maximum time in seconds that a TCP DNS connection is allowed to stay open while being idle
+#
+# tcp-idle-timeout=5
+
+#################################
 # traceback-handler	Enable the traceback handler (Linux only)
 #
 # traceback-handler=yes
@@ -514,7 +599,7 @@ slave={{PDNS_SLAVE}}
 #################################
 # udp-truncation-threshold	Maximum UDP response size before we truncate
 #
-# udp-truncation-threshold=1680
+# udp-truncation-threshold=1232
 
 #################################
 # version-string	PowerDNS version in packets - full, anonymous, powerdns or custom
@@ -522,19 +607,29 @@ slave={{PDNS_SLAVE}}
 # version-string=full
 
 #################################
-# webserver	Start a webserver for monitoring
+# webserver	Start a webserver for monitoring (api=yes also enables the HTTP listener)
 #
-webserver={{PDNS_WEBSERVER}}
+# webserver=no
 
 #################################
-# webserver-address	IP Address of webserver to listen on
+# webserver-address	IP Address of webserver/API to listen on
 #
-webserver-address={{PDNS_WEBSERVER_ADDRESS}}
+# webserver-address=127.0.0.1
 
 #################################
-# webserver-allow-from	Webserver access is only allowed from these subnets
+# webserver-allow-from	Webserver/API access is only allowed from these subnets
 #
-webserver-allow-from=0.0.0.0/0,::/0
+# webserver-allow-from=127.0.0.1,::1
+
+#################################
+# webserver-loglevel	Amount of logging in the webserver (none, normal, detailed)
+#
+# webserver-loglevel=normal
+
+#################################
+# webserver-max-bodysize	Webserver/API maximum request/response body size in megabytes
+#
+# webserver-max-bodysize=2
 
 #################################
 # webserver-password	Password required for accessing the webserver
@@ -542,9 +637,9 @@ webserver-allow-from=0.0.0.0/0,::/0
 # webserver-password=
 
 #################################
-# webserver-port	Port of webserver to listen on
+# webserver-port	Port of webserver/API to listen on
 #
-webserver-port={{PDNS_WEBSERVER_PORT}}
+# webserver-port=8081
 
 #################################
 # webserver-print-arguments	If the webserver should print arguments
