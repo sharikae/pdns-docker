@@ -1,11 +1,6 @@
-# env
-.env.master
-
 # idea
 .idea
 *.iml
 
 # data
 data/
-authoritative/assets/config/pdns.conf
-authoritative/assets/config/pdns.d/mysql.conf

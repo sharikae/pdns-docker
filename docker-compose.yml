@@ -1,13 +1,24 @@
 version: "3"
 services:
-  pdns:
+  authoritative:
     build: authoritative
     container_name: pdns_authoritative
-    ports:
-    - "53:53"
-    - "53:53/udp"
-    - "36000:8081"
+    volumes:
+      - ./authoritative/assets/config:/etc/powerdns
+    networks:
+      pdns_network:
+        ipv4_address: 192.168.0.2
     env_file: .env.master
+
+  local:
+    build: authoritative
+    container_name: pdns_local
+    volumes:
+      - ./authoritative/assets/config_local:/etc/powerdns
+    networks:
+      pdns_network:
+        ipv4_address: 192.168.0.3
+    env_file: .env.local
 
   pdns-db:
     image: mysql:5.7
@@ -15,4 +26,38 @@ services:
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - ./data/mysql:/var/lib/mysql
+    networks:
+      pdns_network:
+        ipv4_address: 192.168.0.4
     env_file: .env.master
+
+  recursor:
+    build: recursor
+    container_name: pdns_recursor
+    restart: 'unless-stopped'
+    volumes:
+      - ./recursor/config:/etc/powerdns
+    networks:
+      pdns_network:
+        ipv4_address: 192.168.0.5
+
+  dnsdist:
+    build: dnsdist
+    container_name: pdns_dnsdist
+    restart: 'unless-stopped'
+    ports:
+      - "{YOUR_LOCAL_IP}:53:53"
+      - "{YOUR_LOCAL_IP}:53:53/udp"
+    volumes:
+      - ./dnsdist/config:/etc/dnsdist
+    networks:
+      pdns_network:
+        ipv4_address: 192.168.0.6
+
+networks:
+  pdns_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24

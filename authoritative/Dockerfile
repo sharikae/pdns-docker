@@ -13,13 +13,14 @@ RUN apt-get update && apt-get install -y curl sudo \
 
 RUN apt-get update && apt-get install -y \
 	mysql-client \
+	netcat-openbsd \
 	pdns-server \
 	pdns-backend-mysql \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY assets/sql/pdns.sql /pdns.sql
-COPY assets/create_db.sh /usr/bin/
+COPY assets/sql/create_db.sh /usr/bin/
 RUN chmod 755 /usr/bin/create_db.sh
 
 EXPOSE 53 80
